@@ -1,0 +1,108 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Jogo ODS</title>
+<style>
+  body { margin:0; font-family: sans-serif; text-align:center; background: #e0f7fa;}
+  h1 { color: #00695c; }
+  #gameCanvas { background: #004d40; display:block; margin: 20px auto; border: 3px solid #004d40;}
+  button { padding:10px 20px; font-size:16px; margin-top:10px; cursor:pointer;}
+  #info { margin-top:15px; font-weight:bold; color:#00695c; }
+</style>
+</head>
+<body>
+<h1>Jogo ODS - Coletando Objetivos de Desenvolvimento Sustentável</h1>
+<canvas id="gameCanvas" width="400" height="400"></canvas>
+<br>
+<button onclick="startGame()">Iniciar Jogo</button>
+<div id="info"></div>
+
+<script>
+const canvas = document.getElementById('gameCanvas');
+const ctx = canvas.getContext('2d');
+const info = document.getElementById('info');
+
+// Jogador
+let player = { x: 180, y: 350, width: 40, height: 40, color: '#ffeb3b' };
+
+// Objetos que caem (ODS)
+let objects = [];
+let score = 0;
+let gameInterval;
+
+// Lista simplificada de ODS (cores + textos)
+const odsList = [
+    { color: '#e5243b', text: "ODS 1 - Erradicação da Pobreza" },
+    { color: '#dda63a', text: "ODS 2 - Fome Zero e Agricultura Sustentável" },
+    { color: '#4c9f38', text: "ODS 3 - Saúde e Bem-estar" },
+    { color: '#c5192d', text: "ODS 4 - Educação de Qualidade" },
+    { color: '#ff3a21', text: "ODS 5 - Igualdade de Gênero" },
+    { color: '#26bde2', text: "ODS 6 - Água Potável e Saneamento" },
+    { color: '#fcc30b', text: "ODS 7 - Energia Limpa e Acessível" },
+    { color: '#a21942', text: "ODS 8 - Trabalho Decente e Crescimento Econômico" }
+];
+
+function startGame() {
+    score = 0;
+    objects = [];
+    player.x = 180;
+    info.textContent = "";
+    clearInterval(gameInterval);
+    gameInterval = setInterval(updateGame, 50);
+}
+
+document.addEventListener('keydown', e => {
+    if(e.key === 'ArrowLeft' && player.x > 0) player.x -= 20;
+    if(e.key === 'ArrowRight' && player.x < canvas.width - player.width) player.x += 20;
+});
+
+function updateGame() {
+    ctx.clearRect(0, 0, canvas.width, canvas.height);
+    
+    // Criar objetos aleatórios (ODS caindo)
+    if(Math.random() < 0.05){
+        let ods = odsList[Math.floor(Math.random()*odsList.length)];
+        objects.push({
+            x: Math.random()*360,
+            y: 0,
+            width:20,
+            height:20,
+            color: ods.color,
+            text: ods.text
+        });
+    }
+
+    // Atualizar objetos
+    for(let i=0; i<objects.length; i++){
+        let obj = objects[i];
+        obj.y += 5;
+        ctx.fillStyle = obj.color;
+        ctx.beginPath();
+        ctx.arc(obj.x+10, obj.y+10, 10, 0, Math.PI*2); // bolinha
+        ctx.fill();
+
+        // Colisão
+        if(obj.y + obj.height > player.y &&
+           obj.x < player.x + player.width &&
+           obj.x + obj.width > player.x){
+            score++;
+            info.textContent = "Você coletou: " + obj.text;
+            objects.splice(i,1);
+            i--;
+        }
+    }
+
+    // Desenhar jogador
+    ctx.fillStyle = player.color;
+    ctx.fillRect(player.x, player.y, player.width, player.height);
+
+    // Mostrar pontuação
+    ctx.fillStyle = '#ffffff';
+    ctx.font = '16px sans-serif';
+    ctx.fillText('Pontuação: ' + score, 10, 20);
+}
+</script>
+</body>
+</html>
