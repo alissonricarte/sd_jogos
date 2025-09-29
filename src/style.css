@@ -1,0 +1,10 @@
+*{box-sizing:border-box}
+body{font-family:Arial,Helvetica,sans-serif;background:#0b1220;color:#e6eef8;margin:0;padding:20px}
+.container{max-width:900px;margin:0 auto}
+.game-area{display:flex;gap:16px;align-items:flex-start}
+canvas{background:#071428;border-radius:8px;box-shadow:0 6px 18px rgba(0,0,0,0.6)}
+.hud{color:#cfe8ff}
+button{background:#1f7a8c;color:white;border:none;padding:8px 12px;border-radius:6px;cursor:pointer}
+footer{margin-top:18px;font-size:13px;color:#94b8cf}
+h1{margin:0 0 8px 0}
+p{margin-top:4px;color:#a9c7db}
